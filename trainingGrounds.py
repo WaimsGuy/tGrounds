@@ -21,6 +21,10 @@ def compute():
 			answer = (int(number1) / int(number2))
 	elif mathsign == 'titan':
 		answer = 'Dispensing crayons...'
+	elif mathsign == 'warlock':
+		answer = 'Go up...'
+	elif mathsign == 'hunter':
+		answer = 'Shatterskate go brrr...'
 	else:
 		answer = 'I cannot do that.'
 	print(answer)
