@@ -54,6 +54,9 @@ def catalog():
 	elif ctask == 'clear':
 		print('Catalog cleared!')
 		cataloglist = {}
+	elif ctask == 'sort':
+		cataloglist = sorted(cataloglist.items())
+		print('Catalog sorted!')
 	elif ctask == 'back':
 		directory()
 	else:
