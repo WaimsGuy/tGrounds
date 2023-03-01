@@ -2,6 +2,49 @@ helplist = {'Help': 'Displays list of actions', 'Calculator': 'Opens calculator!
 cataloglist = dict()
 
 
+def getfile():
+	file = input('What file would you like to access? ') + '.txt'
+	return file
+
+
+def readfile():
+	file = getfile()
+	fhand = open(file, 'r')
+	print(fhand.read())
+
+
+def appendfile():
+	file = getfile()
+	fhand = open(file, 'a')
+	newcontent = input('What text would you like to add to ' + file + '?')
+	fhand.write('\n' + newcontent)
+	print('Content, "' + newcontent + '", has been added to ' + file + '!')
+
+
+def clearfile():
+	file = getfile()
+	fhand = open(file, 'w')
+	fhand.write("")
+
+
+def accessfile():
+	ftask = input('Would you like to read, write to, or clear a file? ')
+	if ftask == 'read':
+		readfile()
+		accessfile()
+	elif ftask == 'write':
+		appendfile()
+		accessfile()
+	elif ftask == 'clear':
+		clearfile()
+		accessfile()
+	elif ftask == 'back':
+		directory()
+	else:
+		print('I am not sure what you are asking?')
+		accessfile()
+
+
 def compute():
 	print('Welcome to Calculator!')
 	number1 = input('Please type the first number: ')
@@ -73,6 +116,9 @@ def directory():
 	elif task == 'catalog':
 		print('Welcome to the catalog!')
 		catalog()
+	elif task == 'file':
+		print('Welcome to file access!')
+		accessfile()
 	else:
 		print('I am not sure what you are asking. For a list of actions type help in the prompt.')
 	directory()
