@@ -2,6 +2,13 @@ helplist = {'Help': 'Displays list of actions', 'Calculator': 'Opens calculator!
 cataloglist = dict()
 
 
+def readfile():
+	getfile = input('What file would you like to access? ') + '.txt'
+	print(getfile)
+	fhand = open(getfile, 'r')
+	print(fhand.read())
+
+
 def compute():
 	print('Welcome to Calculator!')
 	number1 = input('Please type the first number: ')
@@ -73,6 +80,9 @@ def directory():
 	elif task == 'catalog':
 		print('Welcome to the catalog!')
 		catalog()
+	elif task == 'read':
+		print('Welcome to file reader!')
+		readfile()
 	else:
 		print('I am not sure what you are asking. For a list of actions type help in the prompt.')
 	directory()
