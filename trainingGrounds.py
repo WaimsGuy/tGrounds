@@ -1,5 +1,69 @@
 helplist = {'Help': 'Displays list of actions', 'Calculator': 'Opens calculator!', 'Catalog': 'Opens the catalog!'}
 cataloglist = dict()
+currency = 500
+grabshop = open('shopkeep.txt', 'r').read().splitlines()
+shopstock = dict()
+
+
+def itemsplit(item):
+
+
+
+def shoplist():
+	for i in range(len(grabshop)):
+		shopitem = grabshop[i].split(",")
+		shopstock
+
+
+def displayitems():
+	for i in range(len(grabshop)):
+		shopitem = grabshop[i].split(",")
+		if shopitem[1] != '0':
+			print(shopitem[0] + '(' + shopitem[1] + ')' + ': ' + shopitem[2] + 'g')
+
+
+def itemcheck(item):
+	for i in range(len(grabshop)):
+		shopitem = grabshop[i].split(",")
+		if item != shopitem[0]:
+			continue
+		elif item == shopitem[0]:
+			return 'true'
+		else:
+			return 'false'
+
+
+def sbuy():
+	global currency
+	print(currency)
+	print('Here is what I have for sale!')
+	displayitems()
+	buyitem = input('What would you like to purchase?\n')
+	if itemcheck(buyitem) == 'true':
+
+		for i in range(len(grabshop)):
+			shopitem = grabshop[i].split(",")
+			buyqty = input('How many would you like to buy?\n')
+			if buyqty <= shopitem[1]:
+				price = int(shopitem[2]) * int(buyqty)
+				if currency >= price:
+					print("You have enough gold! Enjoy!")
+					currency -= price
+					print(currency)
+					break
+				else:
+					print("Sorry Link, I can't GIVE credit. Come back when you're a little mmmm RICHER!")
+					break
+			else:
+				print("I don't have that many of that item!")
+	else:
+		print("I don't have that item.")
+
+
+def shop():
+	print('Welcome adventurer! Have you come to browse my wares?')
+	print('*You currently have ' + ' gold*')
+	action = input('[B]uy | [S]ell | Check [I]nventory \n')
 
 
 def getfile():
@@ -119,6 +183,8 @@ def directory():
 	elif task == 'file':
 		print('Welcome to file access!')
 		accessfile()
+	elif task == 'shop':
+		sbuy()
 	else:
 		print('I am not sure what you are asking. For a list of actions type help in the prompt.')
 	directory()
