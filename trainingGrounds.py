@@ -1,69 +1,115 @@
 helplist = {'Help': 'Displays list of actions', 'Calculator': 'Opens calculator!', 'Catalog': 'Opens the catalog!'}
 cataloglist = dict()
-currency = 500
-grabshop = open('shopkeep.txt', 'r').read().splitlines()
-shopstock = dict()
 
 
-def itemsplit(item):
+# create global variable currency
+def initgold():
+	currency = 500
+	return currency
 
 
+# grab global currency variable
+def grabgold():
+	global gold
+	gold = initgold()
+	return gold
 
-def shoplist():
+
+# reset shopkeep.txt to original state
+def resetshop():
+	fhand = open('shopkeep.txt', 'w')
+	fhand.write('Sword,3,120\nDagger,2,60\nPotion,0,25')
+
+
+# split each shopkeep.txt line into a list then nest each list into shopstock
+def itemsplit():
+	fhand = open('shopkeep.txt', 'r')
+	grabshop = fhand.read().splitlines()
+	shopstock = list()
 	for i in range(len(grabshop)):
 		shopitem = grabshop[i].split(",")
-		shopstock
+		shopstock.append(shopitem)
+	return shopstock
 
 
+# display shop items using itemsplit for user to purchase
 def displayitems():
-	for i in range(len(grabshop)):
-		shopitem = grabshop[i].split(",")
-		if shopitem[1] != '0':
-			print(shopitem[0] + '(' + shopitem[1] + ')' + ': ' + shopitem[2] + 'g')
-
-
-def itemcheck(item):
-	for i in range(len(grabshop)):
-		shopitem = grabshop[i].split(",")
-		if item != shopitem[0]:
-			continue
-		elif item == shopitem[0]:
-			return 'true'
-		else:
-			return 'false'
-
-
-def sbuy():
-	global currency
-	print(currency)
 	print('Here is what I have for sale!')
+	shopitem = itemsplit()
+	for i in range(len(shopitem)):
+		if shopitem[i][1] != '0':
+			print(shopitem[i][0] + '(' + shopitem[i][1] + ')' + ': ' + shopitem[i][2] + 'g')
+
+
+# checks if user specified item is in shopstock created by itemsplit func
+def itemcheck(item):
+	shopstock = itemsplit()
+	for i in range(len(shopstock)):
+		if item != shopstock[i][0]:
+			continue
+		elif item == shopstock[i][0]:
+			return 'true'
+
+
+# function to check if user specified quantity is less than or equal to shopstock qty
+def quantitycheck(item, quantity):
+	shopstock = itemsplit()
+	for i in range(len(shopstock)):
+		if item == shopstock[i][0] and int(quantity) <= int(shopstock[i][1]):
+			hasqty = 'true'
+			price = int(shopstock[i][2]) * int(shopstock[i][1])
+			position = shopstock[i].index(item)
+			return [hasqty, price, position]
+		else:
+			hasqty = 'false'
+			return hasqty
+
+
+# function to update shopstock after purchase
+def updatestock(item, quantity, position):
+	shopstock = itemsplit()
+	if quantitycheck(item, quantity)[0] == 'true':
+		print(shopstock)
+		print(shopstock[position][1])
+		newqty = int(shopstock[position][1]) - int(quantity)
+		print(newqty)
+		shopstock[position][1] = str(newqty)
+		print(shopstock[0][0] + ',' + shopstock[0][1] + ',' + shopstock[0][2])
+		fhand = open('shopkeep.txt', 'w')
+		for i in range(len(shopstock)):
+			fhand.write(shopstock[i][0] + ',' + shopstock[i][1] + ',' + shopstock[i][2] + '\n')
+
+
+def sbuy(currentgold):
+	print(currentgold)
 	displayitems()
 	buyitem = input('What would you like to purchase?\n')
 	if itemcheck(buyitem) == 'true':
-
-		for i in range(len(grabshop)):
-			shopitem = grabshop[i].split(",")
-			buyqty = input('How many would you like to buy?\n')
-			if buyqty <= shopitem[1]:
-				price = int(shopitem[2]) * int(buyqty)
-				if currency >= price:
-					print("You have enough gold! Enjoy!")
-					currency -= price
-					print(currency)
-					break
-				else:
-					print("Sorry Link, I can't GIVE credit. Come back when you're a little mmmm RICHER!")
-					break
+		buyqty = input('How many would you like to buy?\n')
+		if quantitycheck(buyitem, buyqty)[0] == 'true':
+			price = quantitycheck(buyitem, buyqty)[1]
+			position = quantitycheck(buyitem, buyqty)[2]
+			if currentgold >= price:
+				print("You have enough gold! Enjoy!")
+				currentgold -= price
+				updatestock(buyitem, buyqty, position)
+				shop(currentgold)
 			else:
-				print("I don't have that many of that item!")
+				print("Sorry Link, I can't GIVE credit. Come back when you're a little mmmm RICHER!")
+		else:
+			print("I don't have that many of that item!")
 	else:
 		print("I don't have that item.")
+	shop(currentgold)
 
 
-def shop():
+def shop(currency):
+	currentgold = currency
 	print('Welcome adventurer! Have you come to browse my wares?')
-	print('*You currently have ' + ' gold*')
+	print('*You currently have ', currentgold, ' gold*')
 	action = input('[B]uy | [S]ell | Check [I]nventory \n')
+	if action == 'B':
+		sbuy(currentgold)
 
 
 def getfile():
@@ -184,7 +230,10 @@ def directory():
 		print('Welcome to file access!')
 		accessfile()
 	elif task == 'shop':
-		sbuy()
+		initgold()
+		resetshop()
+		gold = grabgold()
+		shop(gold)
 	else:
 		print('I am not sure what you are asking. For a list of actions type help in the prompt.')
 	directory()
